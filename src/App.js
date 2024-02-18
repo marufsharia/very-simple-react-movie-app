@@ -4,16 +4,17 @@ import MovieCard from './components/MovieCard'
 import searchLogo from './search.svg'
 
 const App = () => {
-  const API_URl = ' http://www.omdbapi.com/?apikey=b444fca'
+  const API_URl = 'http://www.omdbapi.com/?apikey=b444fca'
   const [movies, setMovies] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
 
   const searchMovies = async (title) => {
-    const response = await fetch(`${API_URl}&s=${title}`)
+    const response = await fetch(`${API_URl}&s=${title?.length > 0 ? title : 'superman'}`)
     const data = await response.json()
 
     setMovies(data.Search)
   }
+
   useEffect(() => {
     searchMovies('superman')
   }, [])
@@ -45,7 +46,7 @@ const App = () => {
         />
       </div>
 
-      {movies != null && movies.length > 0 ? (
+      {movies?.length > 0 ? (
         <div className='container'>
           {movies.map((movie, index) => (
             <MovieCard movie={movie} key={index} />
@@ -59,5 +60,4 @@ const App = () => {
     </div>
   )
 }
-
 export default App
