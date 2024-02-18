@@ -1,25 +1,63 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from 'react'
+import './App.css'
+import MovieCard from './components/MovieCard'
+import searchLogo from './search.svg'
 
-function App() {
+const App = () => {
+  const API_URl = ' http://www.omdbapi.com/?apikey=b444fca'
+  const [movies, setMovies] = useState([])
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const searchMovies = async (title) => {
+    const response = await fetch(`${API_URl}&s=${title}`)
+    const data = await response.json()
+
+    setMovies(data.Search)
+  }
+  useEffect(() => {
+    searchMovies('superman')
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app'>
+      <h1> MovieLand</h1>
+
+      <div className='search'>
+        <input
+          type='search'
+          placeholder='Search'
+          value={searchTerm}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              searchMovies(searchTerm)
+            }
+          }}
+          onChange={(e) => {
+            setSearchTerm(e.target.value)
+          }}
+        />
+        <img
+          src={searchLogo}
+          alt='Search'
+          onClick={() => {
+            searchMovies(searchTerm)
+          }}
+        />
+      </div>
+
+      {movies != null && movies.length > 0 ? (
+        <div className='container'>
+          {movies.map((movie, index) => (
+            <MovieCard movie={movie} key={index} />
+          ))}
+        </div>
+      ) : (
+        <div>
+          <h2>No movie found!</h2>
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
